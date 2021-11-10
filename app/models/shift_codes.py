@@ -6,4 +6,3 @@ class ShiftCode(models.Model):
     end_time = models.TimeField(auto_now=False, auto_now_add=False)
     start_break = models.TimeField(auto_now=False, auto_now_add=False)
     end_break = models.TimeField(auto_now=False, auto_now_add=False)
-    exit_time = models.TimeField(auto_now=False, auto_now_add=False)
