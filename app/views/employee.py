@@ -10,10 +10,14 @@ from app.serializers import EmployeeSerializer
 @csrf_exempt
 @api_view(['GET', 'POST', 'PUT', 'DELETE'])
 
+# GET employees from department id
+
 def employee_list(request):
   if request.method == 'GET':
-    employees = Employee.objects.all()
-    serializer = EmployeeSerializer(employees, many=True)
+    employee_data = JSONParser().parse(request)
+    department_id = employee_data['department']
+    employee = Employee.objects.filter(department=department_id)
+    serializer = EmployeeSerializer(employee, many=True)
     return JsonResponse(serializer.data, safe=False)
 
   elif request.method == 'POST':
@@ -38,3 +42,9 @@ def employee_list(request):
     employee = Employee.objects.get(id=employee_data['id'])
     employee.delete()
     return JsonResponse("Delete Successfully.", safe=False)
+
+def employee_all(request):
+  if request.method == 'GET':
+    employee = Employee.objects.all()
+    serializer = EmployeeSerializer(employee, many=True)
+    return JsonResponse(serializer.data, safe=False)

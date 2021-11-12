@@ -10,9 +10,13 @@ from app.serializers import TimeRecordSerializer
 @csrf_exempt
 @api_view(['GET', 'POST', 'PUT', 'DELETE'])
 
+# GET time record data from id
+
 def time_record(request):
     if request.method == 'GET':
-        record = TimeRecord.objects.all()
+        record_data = JSONParser().parse(request)
+        record_id = record_data['id']
+        record = TimeRecord.objects.filter(id=record_id)
         serializer = TimeRecordSerializer(record, many=True)
         return JsonResponse(serializer.data, safe=False)
 
@@ -39,3 +43,8 @@ def time_record(request):
         record.delete()
         return JsonResponse("Delete Successfully.", safe=False)
 
+def record_all(request):
+    if request.method == 'GET':
+        record = TimeRecord.objects.all()
+        serializer = TimeRecordSerializer(record, many=True)
+        return JsonResponse(serializer.data, safe=False)

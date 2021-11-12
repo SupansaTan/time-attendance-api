@@ -12,10 +12,14 @@ from app.serializers import ShiftCodeSerializer
 @csrf_exempt
 @api_view(['GET', 'POST', 'PUT', 'DELETE'])
 
+# GET shift code data from id
+
 def shift_code(request):
   if request.method == 'GET':
-    shiftcode = ShiftCode.objects.all()
-    serializer = ShiftCodeSerializer(shiftcode, many=True)
+    code_data = JSONParser().parse(request)
+    code_id = code_data['id']
+    code = ShiftCode.objects.filter(id=code_id)
+    serializer = ShiftCodeSerializer(code, many=True)
     return JsonResponse(serializer.data, safe=False)
 
   elif request.method == 'POST':
@@ -40,3 +44,9 @@ def shift_code(request):
       shiftcode = ShiftCode.objects.get(id=shiftcode_data['id'])
       shiftcode.delete()
       return JsonResponse("Delete Successfully.", safe=False)
+
+def all_shift_code(request):
+  if request.method == 'GET':
+    shiftcode = ShiftCode.objects.all()
+    serializer = ShiftCodeSerializer(shiftcode, many=True)
+    return JsonResponse(serializer.data, safe=False)

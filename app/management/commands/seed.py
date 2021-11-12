@@ -2,7 +2,12 @@
 from django.core.management.base import BaseCommand
 import datetime
 
-from app.models import Employee
+from app.models import Employee,Department,PlanShift,ShiftCode,TimeRecord, plan_shift
+
+# Reading xls file for mock up
+import xlrd
+
+import datetime
 
 # python manage.py seed --mode=refresh
 """ Clear all data and creates addresses """
@@ -24,42 +29,99 @@ class Command(BaseCommand):
 
 def clear_data():
   """Deletes all the table data"""
-  Employee.objects.all().delete()
+  # Employee.objects.all().delete()
+  # Department.objects.all().delete()
+  PlanShift.objects.all().delete()
+  # ShiftCode.objects.all().delete()
+  TimeRecord.objects.all().delete()
+
+# Open mockup_data.xls
+loc = ("Data_table.xls")
+workbook = xlrd.open_workbook(loc)
 
 def create_employees():
-  mock_employees = [
-    {
-      'name_title': 'นาย',
-      'first_name': 'ภูสิทธิ',
-      'last_name': 'บาดตาสาว',
-      'hire_date': datetime.datetime(2018, 6, 1),
-      'employee_type': 'monthly'
-    },
-    {
-      'name_title': 'นางสาว',
-      'first_name': 'นฤมล',
-      'last_name': 'มนูญศักดิ์',
-      'hire_date': datetime.datetime(2019, 1, 1),
-      'employee_type': 'monthly'
-    },
-    {
-      'name_title': 'นาย',
-      'first_name': 'ไกรยุทธ์',
-      'last_name': 'อัศวรัช',
-      'hire_date': datetime.datetime(2020, 2, 9),
-      'employee_type': 'daily'
-    }
-  ]
-
-  for i in range(len(mock_employees)):
+  sheet = workbook.sheet_by_index(0)
+  for i in range(1,sheet.nrows):
+    data = sheet.row_values(i)
+    department_list = str(data[4]).split(',')
+    department_data = [int(x) for x in department_list if len(x)!=0]
     employee = Employee(
-      name_title = mock_employees[i]['name_title'],
-      first_name = mock_employees[i]['first_name'],
-      last_name = mock_employees[i]['last_name'],
-      hire_date = mock_employees[i]['hire_date'],
-      employee_type = mock_employees[i]['employee_type']
+    name_title = data[1],
+    first_name = data[2],
+    last_name = data[3],
+    hire_date = data[5],
+    employee_type = data[5],
+    role = data[7],
+    email = data[8],
+    password = data[9]
     )
     employee.save()
+    employee.department.set(department_data)
+
+  
+def create_departments():
+  sheet = workbook.sheet_by_index(1)
+  for i in range(1,sheet.nrows):
+    data = sheet.row_values(i)
+    department = Department(
+    dep_code = data[0],
+    name = data[1],
+    active_employee = data[2],
+    total_employee = data[3],
+    )
+    department.save()
+
+def convert_time(val):
+  date_values = xlrd.xldate_as_tuple(val, workbook.datemode)
+  time_value = datetime.time(*date_values[3:])
+  return time_value
+
+def convert_date(val):
+  datetime_format = datetime.datetime(*xlrd.xldate_as_tuple(val, workbook.datemode))
+  return datetime_format.strftime("%Y-%m-%d")
+
+def create_timerecord():
+  sheet = workbook.sheet_by_index(2)
+  for i in range(1,sheet.nrows):
+    data = sheet.row_values(i)
+    employee_id = int(data[2])
+    timerecord = TimeRecord(
+    date = convert_date(data[0]),
+    time = convert_time(data[1]),
+    status = data[3],
+    )
+    timerecord.save()
+    timerecord.emp.set(employee_id)
+
+
+def create_shiftcode():
+  sheet = workbook.sheet_by_index(3)
+  for i in range(1,sheet.nrows):
+    data = sheet.row_values(i)
+    shiftcode = ShiftCode(
+    code = data[0],
+    start_time = convert_time(data[1]),
+    end_time = convert_time(data[2]),
+    start_break = convert_time(data[3]),
+    end_break = convert_time(data[4])
+    )
+    shiftcode.save()
+
+
+def create_planshift():
+  sheet = workbook.sheet_by_index(4)
+  for i in range(1,sheet.nrows):
+    data = sheet.row_values(i)
+    employee_id = int(data[2])
+    planshift = PlanShift(
+    date = convert_date(data[0]),
+    dep_code = data[1],
+    start_time = convert_time(data[3]),
+    end_time = convert_time(data[4]),
+    overtime = data[5]
+    )
+    planshift.save()
+    planshift.emp.set(employee_id)
 
 def run_seed(self, mode):
   """ Seed database based on mode
@@ -67,9 +129,13 @@ def run_seed(self, mode):
   :return:
   """
   # Clear data from tables
-  clear_data()
+  # clear_data()
   if mode == MODE_CLEAR:
     return
 
-  # Creating employees
-  create_employees()
+  # Creating
+  # create_departments()    # pass
+  # create_employees()      # pass
+  create_timerecord()     # ติดตรง timerecord.emp.set(id)
+  # create_shiftcode()      # pass
+  # create_planshift()      # ติดตรง planshift.emp.set(id)

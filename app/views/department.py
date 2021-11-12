@@ -11,9 +11,14 @@ from app.serializers import DepartmentSerializer
 
 @csrf_exempt
 @api_view(['GET', 'POST','PUT','DELETE'])
+
+# GET departments data from department id
+
 def department_list(request,param=0):
     if request.method == 'GET':
-        department = Department.objects.all()
+        department_data = JSONParser().parse(request)
+        department_id = department_data['id']
+        department = Department.objects.filter(id=department_id)
         serializer = DepartmentSerializer(department, many=True)
         return JsonResponse(serializer.data, safe=False)
 
@@ -39,3 +44,9 @@ def department_list(request,param=0):
         department = Department.objects.get(id=department_data['id'])
         department.delete()
         return JsonResponse("Delete Successfully.", safe=False)
+
+def department_all(request):
+    if request.method == 'GET':
+        department = Department.objects.all()
+        serializer = DepartmentSerializer(department, many=True)
+        return JsonResponse(serializer.data, safe=False)
