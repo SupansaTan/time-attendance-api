@@ -10,7 +10,7 @@ from app.serializers import PlanShiftSerializer
 @csrf_exempt
 @api_view(['GET', 'POST', 'PUT', 'DELETE'])
 
-# GET plan data data from employee id
+# GET plan data from employee id
 
 def plan_list(request):
     if request.method == 'GET':
@@ -44,14 +44,21 @@ def plan_list(request):
         return JsonResponse("Delete Successfully.", safe=False)
 
 
-# GET plan data data from department code
-def plan_department(request):
+# GET plan data from employee id
+def plan_employee(request,val):
     if request.method == 'GET':
-        plan_data = JSONParser().parse(request)
-        department_code = plan_data['dep_code']
-        plan = PlanShift.objects.filter(dep_code=department_code)
-        serializer = PlanShiftSerializer(plan, many=True)
+        planshift = PlanShift.objects.filter(employee=val)
+        serializer = PlanShiftSerializer(planshift, many=True)
+        print(serializer.data)
         return JsonResponse(serializer.data, safe=False)
+
+# GET plan data from department id
+def plan_department(request,val):
+    if request.method == 'GET':
+        planshift = PlanShift.objects.filter(department=val)
+        serializer = PlanShiftSerializer(planshift, many=True)
+        return JsonResponse(serializer.data, safe=False)
+
 
 def plan_all(request):
     if request.method == 'GET':

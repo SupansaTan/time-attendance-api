@@ -48,3 +48,12 @@ def record_all(request):
         record = TimeRecord.objects.all()
         serializer = TimeRecordSerializer(record, many=True)
         return JsonResponse(serializer.data, safe=False)
+
+
+# GET time record data from department id
+def record_department(request,val):
+    if request.method == 'GET':
+        record = TimeRecord.objects.filter(department=val)
+        serializer = TimeRecordSerializer(record, many=True)
+        print(serializer.data)
+        return JsonResponse(serializer.data, safe=False)
