@@ -31,9 +31,9 @@ def clear_data():
   """Deletes all the table data"""
   # Employee.objects.all().delete()
   # Department.objects.all().delete()
-  PlanShift.objects.all().delete()
+  # PlanShift.objects.all().delete()
   # ShiftCode.objects.all().delete()
-  TimeRecord.objects.all().delete()
+  # TimeRecord.objects.all().delete()
 
 # Open mockup_data.xls
 loc = ("Data_table.xls")
@@ -50,7 +50,7 @@ def create_employees():
     first_name = data[2],
     last_name = data[3],
     hire_date = data[5],
-    employee_type = data[5],
+    employee_type = data[6],
     role = data[7],
     email = data[8],
     password = data[9]
@@ -84,7 +84,7 @@ def create_timerecord():
   sheet = workbook.sheet_by_index(2)
   for i in range(1,sheet.nrows):
     data = sheet.row_values(i)
-    employee_id = int(data[2])
+    employee_id = [int(data[2])]
     timerecord = TimeRecord(
     date = convert_date(data[0]),
     time = convert_time(data[1]),
@@ -112,7 +112,7 @@ def create_planshift():
   sheet = workbook.sheet_by_index(4)
   for i in range(1,sheet.nrows):
     data = sheet.row_values(i)
-    employee_id = int(data[2])
+    employee_id = {int(data[2])}
     planshift = PlanShift(
     date = convert_date(data[0]),
     dep_code = data[1],
@@ -134,8 +134,8 @@ def run_seed(self, mode):
     return
 
   # Creating
-  # create_departments()    # pass
-  # create_employees()      # pass
-  create_timerecord()     # ติดตรง timerecord.emp.set(id)
-  # create_shiftcode()      # pass
-  # create_planshift()      # ติดตรง planshift.emp.set(id)
+  create_departments()   
+  create_employees() 
+  create_timerecord()  
+  create_shiftcode()    
+  create_planshift()  
