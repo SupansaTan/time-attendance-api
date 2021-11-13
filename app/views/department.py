@@ -14,12 +14,11 @@ from app.serializers import DepartmentSerializer
 
 # GET departments data from department id
 
-def department_list(request,param=0):
+def department_list(request,val):
     if request.method == 'GET':
-        department_data = JSONParser().parse(request)
-        department_id = department_data['id']
-        department = Department.objects.filter(id=department_id)
+        department = Department.objects.filter(id=val)
         serializer = DepartmentSerializer(department, many=True)
+        print(serializer.data)
         return JsonResponse(serializer.data, safe=False)
 
     elif request.method == 'POST':

@@ -12,11 +12,9 @@ from app.serializers import EmployeeSerializer
 
 # GET employees from department id
 
-def employee_list(request):
+def employee_list(request,val):
   if request.method == 'GET':
-    employee_data = JSONParser().parse(request)
-    department_id = employee_data['department']
-    employee = Employee.objects.filter(department=department_id)
+    employee = Employee.objects.filter(department=val)
     serializer = EmployeeSerializer(employee, many=True)
     return JsonResponse(serializer.data, safe=False)
 
@@ -46,5 +44,11 @@ def employee_list(request):
 def employee_all(request):
   if request.method == 'GET':
     employee = Employee.objects.all()
+    serializer = EmployeeSerializer(employee, many=True)
+    return JsonResponse(serializer.data, safe=False)
+
+def employee_info(request,val):
+  if request.method == 'GET':
+    employee = Employee.objects.filter(id=val)
     serializer = EmployeeSerializer(employee, many=True)
     return JsonResponse(serializer.data, safe=False)
