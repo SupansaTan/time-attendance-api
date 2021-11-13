@@ -5,18 +5,24 @@ from app import models
 from app.models.employee import Employee
 from app.serializers.employee import EmployeeSerializer
 
+from app.models.department import Department
+from app.serializers.department import DepartmentSerializer
+
 class TimeRecordSerializer(serializers.ModelSerializer):
   
-  emp = serializers.PrimaryKeyRelatedField(many=True, 
+  employee = serializers.PrimaryKeyRelatedField(many=True, 
                      queryset=models.Employee.objects.all())
+        
+  department = serializers.PrimaryKeyRelatedField(many=True, 
+                     queryset=models.Department.objects.all())
 
   class Meta:
     model = TimeRecord
     fields = '__all__'
-    extra_kwargs = {'timerecords': {'required': False}}
+    extra_kwargs = {'dep_plan': {'required': False}, 'emp_plan': {'required': False}}
 
   def to_representation(self, instance):
     representation = super(TimeRecordSerializer, self).to_representation(instance)
-    representation['employee'] = EmployeeSerializer(instance.emp.all(), many=True).data
+    representation['employee'] = EmployeeSerializer(instance.employee.all(), many=True).data
     return representation 
   

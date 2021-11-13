@@ -29,11 +29,11 @@ class Command(BaseCommand):
 
 def clear_data():
   """Deletes all the table data"""
-  # Employee.objects.all().delete()
-  # Department.objects.all().delete()
-  # PlanShift.objects.all().delete()
-  # ShiftCode.objects.all().delete()
-  # TimeRecord.objects.all().delete()
+  Employee.objects.all().delete()
+  Department.objects.all().delete()
+  PlanShift.objects.all().delete()
+  ShiftCode.objects.all().delete()
+  TimeRecord.objects.all().delete()
 
 # Open mockup_data.xls
 loc = ("Data_table.xls")
@@ -44,7 +44,7 @@ def create_employees():
   for i in range(1,sheet.nrows):
     data = sheet.row_values(i)
     department_list = str(data[4]).split(',')
-    department_data = [int(x) for x in department_list if len(x)!=0]
+    department_id = [int(x) for x in department_list if len(x)!=0]
     employee = Employee(
     name_title = data[1],
     first_name = data[2],
@@ -56,7 +56,7 @@ def create_employees():
     password = data[9]
     )
     employee.save()
-    employee.department.set(department_data)
+    employee.department.set(department_id)
 
   
 def create_departments():
@@ -84,14 +84,16 @@ def create_timerecord():
   sheet = workbook.sheet_by_index(2)
   for i in range(1,sheet.nrows):
     data = sheet.row_values(i)
-    employee_id = [int(data[2])]
+    employee_id = [int(data[3])]
+    department_id = [int(data[1])]
     timerecord = TimeRecord(
     date = convert_date(data[0]),
-    time = convert_time(data[1]),
-    status = data[3],
+    time = convert_time(data[2]),
+    status = data[4],
     )
     timerecord.save()
-    timerecord.emp.set(employee_id)
+    timerecord.employee.set(employee_id)
+    timerecord.department.set(department_id)
 
 
 def create_shiftcode():
@@ -112,16 +114,17 @@ def create_planshift():
   sheet = workbook.sheet_by_index(4)
   for i in range(1,sheet.nrows):
     data = sheet.row_values(i)
-    employee_id = {int(data[2])}
+    employee_id = [int(data[2])]
+    department_id = [int(data[1])]
     planshift = PlanShift(
     date = convert_date(data[0]),
-    dep_code = data[1],
     start_time = convert_time(data[3]),
     end_time = convert_time(data[4]),
     overtime = data[5]
     )
     planshift.save()
-    planshift.emp.set(employee_id)
+    planshift.employee.set(employee_id)
+    planshift.department.set(department_id)
 
 def run_seed(self, mode):
   """ Seed database based on mode
@@ -136,6 +139,6 @@ def run_seed(self, mode):
   # Creating
   create_departments()   
   create_employees() 
+  create_shiftcode()
   create_timerecord()  
-  create_shiftcode()    
   create_planshift()  
