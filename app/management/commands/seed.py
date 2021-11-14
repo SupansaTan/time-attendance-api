@@ -36,7 +36,7 @@ def clear_data():
   TimeRecord.objects.all().delete()
 
 # Open mockup_data.xls
-loc = ("Data_table.xls")
+loc = ("Data_Table.xls")
 workbook = xlrd.open_workbook(loc)
 
 def create_employees():
