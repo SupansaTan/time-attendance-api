@@ -1,7 +1,7 @@
 from django.urls import path
 from django.conf.urls import url
 
-from app.views import employee,department, plan_shift, shift_code, time_record, department2
+from app.views import employee,department, plan_shift, shift_code, time_record
 from app.views.department import department_all
 from . import views
 
