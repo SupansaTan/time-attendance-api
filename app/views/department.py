@@ -18,7 +18,6 @@ def department_list(request,val):
     if request.method == 'GET':
         department = Department.objects.filter(id=val)
         serializer = DepartmentSerializer(department, many=True)
-        print(serializer.data)
         return JsonResponse(serializer.data, safe=False)
 
     elif request.method == 'POST':

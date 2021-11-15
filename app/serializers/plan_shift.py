@@ -25,4 +25,5 @@ class PlanShiftSerializer(serializers.ModelSerializer):
   def to_representation(self, instance):
     representation = super(PlanShiftSerializer, self).to_representation(instance)
     representation['employee'] = EmployeeSerializer(instance.employee.all(), many=True).data
+    representation['department'] = DepartmentSerializer(instance.department.all(), many=True).data
     return representation 

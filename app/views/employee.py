@@ -52,3 +52,9 @@ def employee_info(request,val):
     employee = Employee.objects.filter(id=val)
     serializer = EmployeeSerializer(employee, many=True)
     return JsonResponse(serializer.data, safe=False)
+
+def employee_in_department(request,val):
+  if request.method == 'GET':
+    employee = Employee.objects.filter(department=val)
+    serializer = EmployeeSerializer(employee, many=True)
+    return JsonResponse(serializer.data, safe=False)

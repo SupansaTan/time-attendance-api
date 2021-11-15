@@ -1,4 +1,4 @@
-from django.http import JsonResponse
+from django.http import JsonResponse,HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 
 from rest_framework.parsers import JSONParser
@@ -6,6 +6,8 @@ from rest_framework.decorators import api_view
 
 from app.models import TimeRecord
 from app.serializers import TimeRecordSerializer
+
+import datetime
 
 @csrf_exempt
 @api_view(['GET', 'POST', 'PUT', 'DELETE'])
@@ -50,10 +52,12 @@ def record_all(request):
         return JsonResponse(serializer.data, safe=False)
 
 
-# GET time record data from department id
+# GET today time record from department id
 def record_department(request,val):
     if request.method == 'GET':
-        record = TimeRecord.objects.filter(department=val)
+        # today = datetime.datetime.now().strftime('%Y-%m-%d')
+        today = "2021-11-14"
+        record = TimeRecord.objects.filter(department=val, date=today)
         serializer = TimeRecordSerializer(record, many=True)
-        print(serializer.data)
         return JsonResponse(serializer.data, safe=False)
+

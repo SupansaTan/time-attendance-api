@@ -7,6 +7,8 @@ from rest_framework.parsers import JSONParser
 from app.models import PlanShift
 from app.serializers import PlanShiftSerializer
 
+import datetime
+
 @csrf_exempt
 @api_view(['GET', 'POST', 'PUT', 'DELETE'])
 
@@ -49,7 +51,6 @@ def plan_employee(request,val):
     if request.method == 'GET':
         planshift = PlanShift.objects.filter(employee=val)
         serializer = PlanShiftSerializer(planshift, many=True)
-        print(serializer.data)
         return JsonResponse(serializer.data, safe=False)
 
 # GET plan data from department id
@@ -58,7 +59,6 @@ def plan_department(request,val):
         planshift = PlanShift.objects.filter(department=val)
         serializer = PlanShiftSerializer(planshift, many=True)
         return JsonResponse(serializer.data, safe=False)
-
 
 def plan_all(request):
     if request.method == 'GET':
