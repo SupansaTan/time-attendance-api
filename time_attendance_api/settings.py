@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-c9gc7ikzdws!q2$)ncct5jdd@18z1#^tv)-sf_6lww$(m2_$e-
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['time-attendance-api.herokuapp.com']
 
 
 # Application definition
