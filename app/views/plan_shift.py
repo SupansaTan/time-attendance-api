@@ -4,8 +4,10 @@ from django.views.decorators.csrf import csrf_exempt
 from rest_framework.decorators import api_view
 from rest_framework.parsers import JSONParser
 
-from app.models import PlanShift
+from app.models import PlanShift, employee
 from app.serializers import PlanShiftSerializer
+
+from django.db.models import Q
 
 import datetime
 
@@ -46,10 +48,19 @@ def plan_list(request):
         return JsonResponse("Delete Successfully.", safe=False)
 
 
-# GET plan data from employee id
+# GET plan data by employee id from date today++ 
 def plan_employee(request,val):
     if request.method == 'GET':
-        planshift = PlanShift.objects.filter(employee=val)
+        today = datetime.datetime.today()
+        planshift = PlanShift.objects.filter(employee=val).filter(Q(date__gte=today)|Q(date=None))
+
+        serializer = PlanShiftSerializer(planshift, many=True)
+        return JsonResponse(serializer.data, safe=False)
+
+def plan_employee_today(request,val):
+    if request.method == 'GET':
+        today = datetime.datetime.now().strftime('%Y-%m-%d')
+        planshift = PlanShift.objects.filter(employee=val, date=today)
         serializer = PlanShiftSerializer(planshift, many=True)
         return JsonResponse(serializer.data, safe=False)
 
@@ -57,6 +68,13 @@ def plan_employee(request,val):
 def plan_department(request,val):
     if request.method == 'GET':
         planshift = PlanShift.objects.filter(department=val)
+        serializer = PlanShiftSerializer(planshift, many=True)
+        return JsonResponse(serializer.data, safe=False)
+
+def plan_department_today(request,val):
+    if request.method == 'GET':
+        today = datetime.datetime.now().strftime('%Y-%m-%d')
+        planshift = PlanShift.objects.filter(department=val, date=today)
         serializer = PlanShiftSerializer(planshift, many=True)
         return JsonResponse(serializer.data, safe=False)
 

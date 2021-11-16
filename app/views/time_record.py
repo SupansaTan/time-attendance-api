@@ -55,9 +55,16 @@ def record_all(request):
 # GET today time record from department id
 def record_department(request,val):
     if request.method == 'GET':
-        # today = datetime.datetime.now().strftime('%Y-%m-%d')
-        today = "2021-11-14"
+        today = datetime.datetime.now().strftime('%Y-%m-%d')
         record = TimeRecord.objects.filter(department=val, date=today)
+        serializer = TimeRecordSerializer(record, many=True)
+        return JsonResponse(serializer.data, safe=False)
+
+# GET today time record from department id
+def record_employee(request,val):
+    if request.method == 'GET':
+        today = datetime.datetime.now().strftime('%Y-%m-%d')
+        record = TimeRecord.objects.filter(employee=val, date=today)
         serializer = TimeRecordSerializer(record, many=True)
         return JsonResponse(serializer.data, safe=False)
 

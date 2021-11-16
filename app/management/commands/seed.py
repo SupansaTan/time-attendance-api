@@ -8,6 +8,7 @@ from app.models import Employee,Department,PlanShift,ShiftCode,TimeRecord, plan_
 import xlrd
 
 import datetime
+import time
 
 # python manage.py seed --mode=refresh
 """ Clear all data and creates addresses """
@@ -77,8 +78,8 @@ def convert_time(val):
   return time_value
 
 def convert_date(val):
-  datetime_format = datetime.datetime(*xlrd.xldate_as_tuple(val, workbook.datemode))
-  return datetime_format.strftime("%Y-%m-%d")
+  date = datetime.datetime.strptime(val, '%d/%m/%Y')
+  return date.strftime("%Y-%m-%d")
 
 def create_timerecord():
   sheet = workbook.sheet_by_index(2)
@@ -87,8 +88,6 @@ def create_timerecord():
     employee_id = [int(data[3])]
     department_id = [int(data[1])]
     timerecord = TimeRecord(
-    date = convert_date(data[0]),
-    time = convert_time(data[2]),
     status = data[4],
     )
     timerecord.save()

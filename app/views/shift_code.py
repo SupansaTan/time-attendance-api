@@ -14,11 +14,9 @@ from app.serializers import ShiftCodeSerializer
 
 # GET shift code data from id
 
-def shift_code(request):
+def shift_code(request,val):
   if request.method == 'GET':
-    code_data = JSONParser().parse(request)
-    code_id = code_data['id']
-    code = ShiftCode.objects.filter(id=code_id)
+    code = ShiftCode.objects.filter(start_time=val)
     serializer = ShiftCodeSerializer(code, many=True)
     return JsonResponse(serializer.data, safe=False)
 

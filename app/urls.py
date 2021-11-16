@@ -17,9 +17,14 @@ urlpatterns = [
 
   path('api/planshift', plan_shift.plan_all),
   url(r'^api/planshift/department/([0-9]+)$', plan_shift.plan_department),
+  url(r'^api/planshift/department/today/([0-9]+)$', plan_shift.plan_department_today),
+  url(r'^api/planshift/employee/([0-9]+)$', plan_shift.plan_employee),
+  url(r'^api/planshift/employee/today/([0-9]+)$', plan_shift.plan_employee_today),
 
   path('api/shiftcode', shift_code.all_shift_code),
+  url(r'^api/shiftcode/(\d\d:\d\d:\d\d)$', shift_code.shift_code),
   
   path('api/timerecord', time_record.record_all),
-  url(r'^api/timerecord/department/([0-9]+)$', time_record.record_department)
+  url(r'^api/timerecord/department/([0-9]+)$', time_record.record_department),
+  url(r'^api/timerecord/employee/([0-9]+)$', time_record.record_employee)
 ]
