@@ -19,10 +19,11 @@ class TimeRecordSerializer(serializers.ModelSerializer):
   class Meta:
     model = TimeRecord
     fields = '__all__'
-    extra_kwargs = {'dep_plan': {'required': False}, 'emp_plan': {'required': False}}
+    extra_kwargs = {'dep_records': {'required': False}, 'emp_records': {'required': False}}
 
   def to_representation(self, instance):
     representation = super(TimeRecordSerializer, self).to_representation(instance)
     representation['employee'] = EmployeeSerializer(instance.employee.all(), many=True).data
+    representation['department'] = DepartmentSerializer(instance.department.all(), many=True).data
     return representation 
   

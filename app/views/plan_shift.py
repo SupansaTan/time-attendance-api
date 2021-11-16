@@ -3,6 +3,8 @@ from django.views.decorators.csrf import csrf_exempt
 
 from rest_framework.decorators import api_view
 from rest_framework.parsers import JSONParser
+from rest_framework import status
+from rest_framework.response import Response
 
 from app.models import PlanShift, employee
 from app.serializers import PlanShiftSerializer
@@ -18,10 +20,8 @@ import datetime
 
 def plan_list(request):
     if request.method == 'GET':
-        plan_data = JSONParser().parse(request)
-        employee_id = plan_data['emp']
-        plan = PlanShift.objects.filter(emp=employee_id)
-        serializer = PlanShiftSerializer(plan, many=True)
+        planshift = PlanShift.objects.all()
+        serializer = PlanShiftSerializer(planshift, many=True)
         return JsonResponse(serializer.data, safe=False)
 
     elif request.method == 'POST':

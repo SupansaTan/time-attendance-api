@@ -7,4 +7,4 @@ class PlanShift(models.Model):
     employee = models.ManyToManyField('Employee', related_name='emp_plan', blank=True)
     start_time = models.TimeField(auto_now=False, auto_now_add=False)
     end_time = models.TimeField(auto_now=False, auto_now_add=False)
-    overtime = models.IntegerField()
+    overtime = models.FloatField()

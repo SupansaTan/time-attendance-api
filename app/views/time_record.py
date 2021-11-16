@@ -3,8 +3,10 @@ from django.views.decorators.csrf import csrf_exempt
 
 from rest_framework.parsers import JSONParser
 from rest_framework.decorators import api_view
+from rest_framework import status
+from rest_framework.response import Response
 
-from app.models import TimeRecord
+from app.models import TimeRecord, department
 from app.serializers import TimeRecordSerializer
 
 import datetime
@@ -16,9 +18,7 @@ import datetime
 
 def time_record(request):
     if request.method == 'GET':
-        record_data = JSONParser().parse(request)
-        record_id = record_data['id']
-        record = TimeRecord.objects.filter(id=record_id)
+        record = TimeRecord.objects.all()
         serializer = TimeRecordSerializer(record, many=True)
         return JsonResponse(serializer.data, safe=False)
 
@@ -28,11 +28,12 @@ def time_record(request):
         if serializer.is_valid():
             serializer.save()
             return JsonResponse("Add Successfully.", safe=False)
-        return JsonResponse("Failed to Add.", safe=False)
+        return Response(serializer.errors)
+        # return JsonResponse("Failed to Add.", safe=False)
 
     elif request.method == 'PUT':
         record_data = JSONParser().parse(request)
-        record = TimeRecord.objects.get(id=record_data['id'])
+        record = TimeRecord.objects.get(department=record_data['department'][0],employee=record_data['employee'][0])
         serializer = TimeRecordSerializer(record,data=record_data)
         if serializer.is_valid():
             serializer.save()
