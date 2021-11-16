@@ -6,7 +6,7 @@ from rest_framework.parsers import JSONParser
 from rest_framework import status
 from rest_framework.response import Response
 
-from app.models import PlanShift, employee
+from app.models import PlanShift, ShiftCode, employee
 from app.serializers import PlanShiftSerializer
 
 from django.db.models import Q
@@ -25,27 +25,36 @@ def plan_list(request):
         return JsonResponse(serializer.data, safe=False)
 
     elif request.method == 'POST':
-        planshift_data = JSONParser().parse(request)
-        serializer = PlanShiftSerializer(data=planshift_data)
-        if serializer.is_valid():
-            serializer.save()
-            return JsonResponse("Add Successfully.", safe=False)
-        return JsonResponse("Failed to Add.", safe=False)
-
-    elif request.method == 'PUT':
-        planshift_data = JSONParser().parse(request)
-        planshift = PlanShift.objects.get(id=planshift_data['id'])
-        serializer = PlanShiftSerializer(planshift,data=planshift_data)
-        if serializer.is_valid():
-            serializer.save()
-            return JsonResponse("Update Successfully.", safe=False)
-        return JsonResponse("Failed to update.", safe=False)
-
-    elif request.method == 'DELETE':
-        planshift_data = JSONParser().parse(request)
-        planshift = PlanShift.objects.get(id=planshift_data['id'])
-        planshift.delete()
-        return JsonResponse("Delete Successfully.", safe=False)
+        plan = JSONParser().parse(request)
+        employee_all = plan["employee_list"]
+        shiftcode = ShiftCode.objects.get(start_time=plan['start_time'])
+        start_time = shiftcode.start_time
+        end_time = shiftcode.end_time
+        start_date = datetime.datetime.strptime(plan["start_date"], "%Y-%m-%d")
+        end_date = datetime.datetime.strptime(plan["end_date"], "%Y-%m-%d")
+        date = start_date
+        while end_date >= date:
+            for employee_id in employee_all:
+                planshift_data = {
+                                    "date": datetime.datetime.strftime(date, "%Y-%m-%d"),
+                                    "employee": [employee_id],
+                                    "department": plan["department"],
+                                    "overtime": plan["overtime"],
+                                    "start_time": start_time.strftime("%H:%M:%S"),
+                                    "end_time": end_time.strftime("%H:%M:%S"),
+                                }
+                serializer = PlanShiftSerializer(data=planshift_data)
+                if serializer.is_valid():
+                    serializer.save()
+                
+                for row in PlanShift.objects.all():
+                    if PlanShift.objects.filter(date=planshift_data["date"],employee=planshift_data["employee"][0]).count() > 1:
+                        print("Duplicate")
+                        row.delete()
+            
+            date += datetime.timedelta(days=1)
+        
+        return JsonResponse("Add Successfully.", safe=False)
 
 
 # GET plan data by employee id from date today++ 
