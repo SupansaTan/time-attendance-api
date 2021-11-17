@@ -1,1 +1,1 @@
-web: gunicorn time_attendance_api.wsgi --log-file -
+web: gunicorn time_attendance_api.wsgi
