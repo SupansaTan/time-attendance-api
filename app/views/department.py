@@ -14,9 +14,9 @@ from app.serializers import DepartmentSerializer
 
 # GET departments data from department id
 
-def department_list(request,val):
+def department_action(request):
     if request.method == 'GET':
-        department = Department.objects.filter(id=val)
+        department = Department.objects.all()
         serializer = DepartmentSerializer(department, many=True)
         return JsonResponse(serializer.data, safe=False)
 
@@ -30,7 +30,7 @@ def department_list(request,val):
 
     elif request.method == 'PUT':
         department_data = JSONParser().parse(request)
-        department = Department.objects.get(id=department_data['id'])
+        department = Department.objects.get(dep_code=department_data['dep_code'])
         serializer = DepartmentSerializer(department,data=department_data)
         if serializer.is_valid():
             serializer.save()
@@ -39,12 +39,18 @@ def department_list(request,val):
 
     elif request.method == 'DELETE':
         department_data = JSONParser().parse(request)
-        department = Department.objects.get(id=department_data['id'])
+        department = Department.objects.get(dep_code=department_data['dep_code'])
         department.delete()
         return JsonResponse("Delete Successfully.", safe=False)
 
 def department_all(request):
     if request.method == 'GET':
         department = Department.objects.all()
+        serializer = DepartmentSerializer(department, many=True)
+        return JsonResponse(serializer.data, safe=False)
+
+def department_list(request,val):
+    if request.method == 'GET':
+        department = Department.objects.filter(id=val)
         serializer = DepartmentSerializer(department, many=True)
         return JsonResponse(serializer.data, safe=False)

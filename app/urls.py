@@ -12,6 +12,7 @@ urlpatterns = [
   url(r'^api/employees/department/([0-9]+)$', employee.employee_in_department),
   url(r'^api/employees/([0-9]+)$', employee.employee_info),
 
+  path('api/departments/action', department.department_action),
   path('api/departments', department.department_all),
   url(r'^api/departments/([0-9]+)$', department.department_list),
 
