@@ -1,3 +1,4 @@
+from django.db.models.query import QuerySet
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 
@@ -43,15 +44,15 @@ def plan_list(request):
                                     "start_time": start_time.strftime("%H:%M:%S"),
                                     "end_time": end_time.strftime("%H:%M:%S"),
                                 }
-                serializer = PlanShiftSerializer(data=planshift_data)
+                try :
+                    data_exist = PlanShift.objects.get(date=planshift_data["date"],employee=employee_id)
+                    serializer = PlanShiftSerializer(data_exist ,data=planshift_data)
+                except :
+                    serializer = PlanShiftSerializer(data=planshift_data)
+        
                 if serializer.is_valid():
                     serializer.save()
-                
-                for row in PlanShift.objects.all():
-                    if PlanShift.objects.filter(date=planshift_data["date"],employee=planshift_data["employee"][0]).count() > 1:
-                        print("Duplicate")
-                        row.delete()
-            
+                        
             date += datetime.timedelta(days=1)
         
         return JsonResponse("Add Successfully.", safe=False)
