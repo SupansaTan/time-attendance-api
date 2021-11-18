@@ -139,5 +139,5 @@ def run_seed(self, mode):
   create_departments()   
   create_employees() 
   create_shiftcode()
-  create_timerecord()  
-  create_planshift()  
+  # create_timerecord()  
+  # create_planshift()  
