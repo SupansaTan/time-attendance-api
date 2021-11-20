@@ -19,7 +19,7 @@ import datetime
 
 # GET plan data from employee id
 
-def plan_list(request):
+def plan_list(request, param_id=0):
     if request.method == 'GET':
         planshift = PlanShift.objects.all()
         serializer = PlanShiftSerializer(planshift, many=True)
@@ -49,13 +49,15 @@ def plan_list(request):
                     serializer = PlanShiftSerializer(data_exist ,data=planshift_data)
                 except :
                     serializer = PlanShiftSerializer(data=planshift_data)
-        
                 if serializer.is_valid():
-                    serializer.save()
-                        
+                    serializer.save()     
             date += datetime.timedelta(days=1)
-        
         return JsonResponse("Add Successfully.", safe=False)
+
+    elif request.method == 'DELETE':
+        plan_data = PlanShift.objects.get(id=param_id)
+        plan_data.delete()
+        return JsonResponse("Delete Successfully.", safe=False)
 
 
 # GET plan data by employee id from date today++ 
@@ -63,7 +65,6 @@ def plan_employee(request,val):
     if request.method == 'GET':
         today = datetime.datetime.today()
         planshift = PlanShift.objects.filter(employee=val).filter(Q(date__gte=today)|Q(date=None))
-
         serializer = PlanShiftSerializer(planshift, many=True)
         return JsonResponse(serializer.data, safe=False)
 

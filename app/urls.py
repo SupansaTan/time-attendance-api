@@ -17,7 +17,8 @@ urlpatterns = [
   url(r'^api/departments/([0-9]+)$', department.department_list),
 
   path('api/planshift', plan_shift.plan_all),
-  path('api/planshift/new', plan_shift.plan_list),
+  path('api/planshift/action', plan_shift.plan_list),
+  url(r'^api/planshift/action/([0-9]+)$', plan_shift.plan_list),      # for delete
   url(r'^api/planshift/department/([0-9]+)$', plan_shift.plan_department),
   url(r'^api/planshift/department/today/([0-9]+)$', plan_shift.plan_department_today),
   url(r'^api/planshift/employee/([0-9]+)$', plan_shift.plan_employee),
