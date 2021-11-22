@@ -11,7 +11,7 @@ class EmployeeSerializer(serializers.ModelSerializer):
 
   class Meta:
     model = Employee
-    fields = '__all__'
+    fields = ('id', 'first_name', 'last_name', 'department', 'hire_date', 'employee_type', 'role')
     extra_kwargs = {'employees': {'required': False}}
 
   def to_representation(self, instance):
