@@ -2,14 +2,15 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 
 from rest_framework.parsers import JSONParser
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import AllowAny
 
 from app.models import Employee
 from app.serializers import EmployeeSerializer
 
 @csrf_exempt
 @api_view(['GET', 'POST', 'PUT', 'DELETE'])
-
+@permission_classes([AllowAny])
 # GET employees from department id
 
 def employee_list(request,val):
@@ -55,6 +56,6 @@ def employee_info(request,val):
 
 def employee_in_department(request,val):
   if request.method == 'GET':
-    employee = Employee.objects.filter(department=val)
+    employee = Employee.objects.filter(department=val , role='employee')
     serializer = EmployeeSerializer(employee, many=True)
     return JsonResponse(serializer.data, safe=False)

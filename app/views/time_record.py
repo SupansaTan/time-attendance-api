@@ -1,19 +1,19 @@
-from django.http import JsonResponse,HttpResponse
+from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 
 from rest_framework.parsers import JSONParser
-from rest_framework.decorators import api_view
-from rest_framework import status
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 
-from app.models import TimeRecord, department
+from app.models import TimeRecord
 from app.serializers import TimeRecordSerializer
 
 import datetime
 
 @csrf_exempt
 @api_view(['GET', 'POST', 'PUT', 'DELETE'])
-
+@permission_classes([AllowAny])
 # GET time record data from id
 
 def time_record(request):
