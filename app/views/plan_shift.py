@@ -1,13 +1,11 @@
-from django.db.models.query import QuerySet
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, permission_classes
 from rest_framework.parsers import JSONParser
-from rest_framework import status
-from rest_framework.response import Response
+from rest_framework.permissions import AllowAny
 
-from app.models import PlanShift, ShiftCode, employee
+from app.models import PlanShift, ShiftCode
 from app.serializers import PlanShiftSerializer
 
 from django.db.models import Q
@@ -16,7 +14,7 @@ import datetime
 
 @csrf_exempt
 @api_view(['GET', 'POST', 'PUT', 'DELETE'])
-
+@permission_classes([AllowAny])
 # GET plan data from employee id
 
 def plan_list(request, param_id=0):
