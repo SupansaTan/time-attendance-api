@@ -11,8 +11,8 @@ from app.models import Employee
 @api_view(["POST"])
 @permission_classes([AllowAny])
 def login_api(request):  # /auth/login
-  email = request.POST['email']
-  password = request.POST['password']
+  email = request.data.get('email', '')
+  password = request.data.get('password', '')
 
   if Employee.objects.filter(Q(email=email) & Q(password=password)).exists():  # has employee in database
     user = authenticate(email, password)
@@ -42,7 +42,7 @@ def getCurrentUserRole(request):  # /auth/getCurrentUserRole
     emp = Employee.objects.get(user_id=user)
     
     data = {}
-    data['employee_id'] = emp.id
+    data['employeeId'] = emp.id
     data['role'] = emp.role
     res = {
       'data': data,
