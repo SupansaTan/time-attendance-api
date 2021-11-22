@@ -1,7 +1,7 @@
 from django.urls import path
 from django.conf.urls import url
 
-from app.views import employee,department, plan_shift, shift_code, time_record
+from app.views import employee,department, plan_shift, shift_code, time_record, auth
 from app.views.department import department_all
 from . import views
 
@@ -31,4 +31,8 @@ urlpatterns = [
   url(r'^api/timerecord/department/([0-9]+)$', time_record.record_department),
   url(r'^api/timerecord/employee/([0-9]+)$', time_record.record_employee),
   path('api/timerecord/new', time_record.time_record),
+
+  path('api/auth/login', auth.login_api),
+  path('api/auth/logout', auth.logout_api),
+  path('api/auth/getCurrentUserRole', auth.getCurrentUserRole)
 ]
