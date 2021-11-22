@@ -1,5 +1,6 @@
 # <project>/<app>/management/commands/seed.py
 from django.core.management.base import BaseCommand
+from django.contrib.auth.models import User
 import datetime
 
 from app.models import Employee,Department,PlanShift,ShiftCode,TimeRecord, plan_shift
@@ -46,15 +47,21 @@ def create_employees():
     data = sheet.row_values(i)
     department_list = str(data[4]).split(',')
     department_id = [int(x) for x in department_list if len(x)!=0]
+
+    # create user for authentication
+    u = User.objects.create(username=data[8], first_name=data[2], last_name=data[3])
+    u.save()
+
     employee = Employee(
-    name_title = data[1],
-    first_name = data[2],
-    last_name = data[3],
-    hire_date = data[5],
-    employee_type = data[6],
-    role = data[7],
-    email = data[8],
-    password = data[9]
+      user = u,
+      name_title = data[1],
+      first_name = data[2],
+      last_name = data[3],
+      hire_date = data[5],
+      employee_type = data[6],
+      role = data[7],
+      email = data[8],
+      password = data[9]
     )
     employee.save()
     employee.department.set(department_id)
