@@ -17,7 +17,7 @@ from datetime import timedelta
 @permission_classes([AllowAny])
 # GET time record data from id
 
-def time_record(request):
+def manage_time_record(request):
     if request.method == 'GET':
         record = TimeRecord.objects.all()
         serializer = TimeRecordSerializer(record, many=True)

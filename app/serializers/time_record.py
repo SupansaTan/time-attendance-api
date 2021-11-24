@@ -13,17 +13,17 @@ class TimeRecordSerializer(serializers.ModelSerializer):
   employee = serializers.PrimaryKeyRelatedField(many=True, 
                      queryset=models.Employee.objects.all())
         
-  # department = serializers.PrimaryKeyRelatedField(many=True, 
-                    #  queryset=models.Department.objects.all())
+  department = serializers.PrimaryKeyRelatedField(many=True, 
+                     queryset=models.Department.objects.all())
 
   class Meta:
     model = TimeRecord
-    fields = ('id', 'date', 'time', 'status', 'employee')
+    fields = '__all__'
     extra_kwargs = {'dep_records': {'required': False}, 'emp_records': {'required': False}}
 
   def to_representation(self, instance):
     representation = super(TimeRecordSerializer, self).to_representation(instance)
     representation['employee'] = EmployeeSerializer(instance.employee.all(), many=True).data
-    # representation['department'] = DepartmentSerializer(instance.department.all(), many=True).data
+    representation['department'] = DepartmentSerializer(instance.department.all(), many=True).data
     return representation 
   
