@@ -13,7 +13,7 @@ from app.serializers import ShiftCodeSerializer
 @permission_classes([AllowAny])
 # GET shift code data from id
 
-def shift_code(request,val):
+def get_shift_code(request,val):
   if request.method == 'GET':
     code = ShiftCode.objects.filter(start_time=val)
     serializer = ShiftCodeSerializer(code, many=True)

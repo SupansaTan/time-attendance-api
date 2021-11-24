@@ -29,7 +29,7 @@ def department_action(request):
 
     elif request.method == 'PUT':
         department_data = JSONParser().parse(request)
-        department = Department.objects.get(dep_code=department_data['dep_code'])
+        department = Department.objects.get(id=department_data['id'])
         serializer = DepartmentSerializer(department,data=department_data)
         if serializer.is_valid():
             serializer.save()
