@@ -10,6 +10,7 @@ from app.models import TimeRecord, ShiftCode
 from app.serializers import TimeRecordSerializer
 
 import datetime
+from datetime import timedelta
 
 @csrf_exempt
 @api_view(['GET', 'POST', 'PUT', 'DELETE'])
@@ -65,8 +66,9 @@ def record_department(request,val):
 def active_employee(request, depId, shift):
     if request.method == 'GET':
         today = datetime.datetime.now().strftime('%Y-%m-%d')
+        before_start = (datetime.datetime.strptime(shift, '%H:%M:%S') - timedelta(minutes=30)).time() # get to work half an hour early.
         end_time = ShiftCode.objects.get(start_time=shift).end_time
-        record = TimeRecord.objects.filter(department=depId, date=today, status='In', time__gte=shift, time__lte=end_time)
+        record = TimeRecord.objects.filter(department=depId, date=today, status='In', time__gte=before_start, time__lte=end_time)
         serializer = TimeRecordSerializer(record, many=True)
         return JsonResponse(serializer.data, safe=False)
     
