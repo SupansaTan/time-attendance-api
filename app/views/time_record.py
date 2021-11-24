@@ -29,8 +29,7 @@ def time_record(request):
         if serializer.is_valid():
             serializer.save()
             return JsonResponse("Add Successfully.", safe=False)
-        return Response(serializer.errors)
-        # return JsonResponse("Failed to Add.", safe=False)
+        return JsonResponse("Failed to Add.", safe=False)
 
     elif request.method == 'PUT':
         record_data = JSONParser().parse(request)
