@@ -6,7 +6,7 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 
-from app.models import TimeRecord
+from app.models import TimeRecord, ShiftCode
 from app.serializers import TimeRecordSerializer
 
 import datetime
@@ -61,6 +61,15 @@ def record_department(request,val):
         serializer = TimeRecordSerializer(record, many=True)
         return JsonResponse(serializer.data, safe=False)
 
+# GET active employee on that shift from department id and shift
+def active_employee(request, depId, shift):
+    if request.method == 'GET':
+        today = datetime.datetime.now().strftime('%Y-%m-%d')
+        end_time = ShiftCode.objects.get(start_time=shift).end_time
+        record = TimeRecord.objects.filter(department=depId, date=today, status='In', time__gte=shift, time__lte=end_time)
+        serializer = TimeRecordSerializer(record, many=True)
+        return JsonResponse(serializer.data, safe=False)
+    
 # GET today time record from department id
 def record_employee(request,val):
     if request.method == 'GET':

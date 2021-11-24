@@ -29,6 +29,7 @@ urlpatterns = [
   
   path('api/timerecord', time_record.record_all),
   url(r'^api/timerecord/department/([0-9]+)$', time_record.record_department),
+  path('api/timerecord/department/<int:depId>/<str:shift>', time_record.active_employee),
   url(r'^api/timerecord/employee/([0-9]+)$', time_record.record_employee),
   path('api/timerecord/new', time_record.time_record),
 
