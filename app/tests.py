@@ -16,20 +16,20 @@ class EmployeeTest(TestCase):
     """mock up data"""
     def setUp(self):
         self.empA = Employee.objects.create(
-            name_title='นาย', 
-            first_name='กระต่าย', 
-            last_name='กระรอก', 
-            employee_type='monthly',
-            role='manager',
-            user= User.objects.create(username='yyy', first_name='xxx', last_name='zzz'),
+            name_title = 'นาย', 
+            first_name = 'กระต่าย', 
+            last_name = 'กระรอก', 
+            employee_type = 'monthly',
+            role = 'manager',
+            user = User.objects.create(username='yyy', first_name='xxx', last_name='zzz'),
         )
         self.empB = Employee.objects.create(
-            name_title='นาย', 
-            first_name='ฉลาม', 
-            last_name='เรือใบ', 
-            employee_type='daily',
-            role='employee',
-            user=User.objects.create(username='aaa', first_name='bbb', last_name='ccc'),
+            name_title = 'นาย', 
+            first_name = 'ฉลาม', 
+            last_name = 'เรือใบ', 
+            employee_type = 'daily',
+            role = 'employee',
+            user = User.objects.create(username='aaa', first_name='bbb', last_name='ccc'),
         )
 
     def test_get_all_employee(self):
@@ -42,7 +42,7 @@ class EmployeeTest(TestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_get_valid_single_employee(self):
-        response = client.get("http://127.0.0.1:8000/api/employees/"+ str(self.empA.id))
+        response = client.get("http://127.0.0.1:8000/api/employees/" + str(self.empA.id))
         employee = Employee.objects.filter(id=self.empA.id)
         serializer = EmployeeSerializer(employee, many=True)
         self.assertEqual(response.json(), serializer.data)
@@ -60,16 +60,16 @@ class DepartmentTest(TestCase):
 
     def setUp(self):
         self.depA = Department.objects.create(
-            dep_code='A001', 
-            name='เชือดไก่ 1', 
-            active_employee='0', 
-            total_employee='17',
+            dep_code = 'A001', 
+            name = 'เชือดไก่ 1', 
+            active_employee = 0, 
+            total_employee = 17,
         )
         self.dpeB = Department.objects.create(
-            dep_code='A002', 
-            name='เชือดไก่ 2', 
-            active_employee='0', 
-            total_employee='15',
+            dep_code = 'A002', 
+            name = 'เชือดไก่ 2', 
+            active_employee = 0, 
+            total_employee = 15,
         )
 
     def test_get_all_department(self):
@@ -89,22 +89,20 @@ class TimeRecordTest(TestCase):
 
     def setUp(self):
         self.empA = Employee.objects.create(
-            name_title='นาย', 
-            first_name='กระต่าย', 
-            last_name='กระรอก', 
-            employee_type='monthly',
-            role='employee',
-            user= User.objects.create(username='yyy', first_name='xxx', last_name='zzz'),
+            name_title = 'นาย', 
+            first_name = 'กระต่าย', 
+            last_name = 'กระรอก', 
+            employee_type = 'monthly',
+            role = 'employee',
+            user =  User.objects.create(username='yyy', first_name='xxx', last_name='zzz'),
         )
         self.depA = Department.objects.create(
-            dep_code='A001', 
-            name='เชือดไก่ 1', 
-            active_employee='0', 
-            total_employee='17',
+            dep_code = 'A001', 
+            name = 'เชือดไก่ 1', 
+            active_employee = 0, 
+            total_employee = 17,
         )
         self.recordA = TimeRecord.objects.create(
-            date = "2021-11-23",
-            time = "09:00:00",
             status = "In",
         )
         self.recordA.employee.set([self.empA.id])
@@ -127,24 +125,24 @@ class PlanshiftTest(TestCase):
 
     def setUp(self):
         self.empA = Employee.objects.create(
-            name_title='นาย', 
-            first_name='กระต่าย', 
-            last_name='กระรอก', 
-            employee_type='monthly',
-            role='employee',
-            user= User.objects.create(username='yyy', first_name='xxx', last_name='zzz'),
+            name_title = 'นาย', 
+            first_name = 'กระต่าย', 
+            last_name = 'กระรอก', 
+            employee_type = 'monthly',
+            role = 'employee',
+            user = User.objects.create(username='yyy', first_name='xxx', last_name='zzz'),
         )
         self.depA = Department.objects.create(
-            dep_code='A001', 
-            name='เชือดไก่ 1', 
-            active_employee='0', 
-            total_employee='17',
+            dep_code = 'A001', 
+            name = 'เชือดไก่ 1', 
+            active_employee = 0, 
+            total_employee = 17,
         )
         self.planA = PlanShift.objects.create(
-            date='2021-11-20', 
-            start_time='00:00:00',
-            end_time='09:00:00', 
-            overtime=0,
+            date = '2021-11-20', 
+            start_time = '00:00:00',
+            end_time = '09:00:00', 
+            overtime = 0,
         )
         self.planA.employee.set([self.empA.id])
         self.planA.department.set([self.depA.id])
